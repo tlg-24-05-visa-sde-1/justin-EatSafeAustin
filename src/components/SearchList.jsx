@@ -2,6 +2,9 @@ import { useState, useEffect, useMemo } from "react";
 import Map from "./Map.jsx";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function SearchList({ allData, names }) {
   //state variables
@@ -41,26 +44,30 @@ function SearchList({ allData, names }) {
 
   useEffect(() => {
     //I need to return only unique places here and then make the cards contain the latest inspection score.
-    let uniqueItemsMap = {};
 
+    //set an empty object
+    let uniqueItemsObject = {};
+
+    //iterate over each item give it a key that is  a combo of its name and address so that each location is unique
     listArray.forEach((item) => {
       const key = `${item.name}-${item.address.human_address}`;
-
-      if (uniqueItemsMap[key]) {
-        const existingItem = uniqueItemsMap[key];
+      //using the key, check if item exists, then compare inspections dates if it does to get the most recent inspection and set that item to the uniqueItemsObject.  If not, just set the item to the uniqueItemsObject.
+      if (uniqueItemsObject[key]) {
+        const existingItem = uniqueItemsObject[key];
         const existingDate = new Date(existingItem.inspection_date);
         const currentDate = new Date(item.inspection_date);
 
         if (currentDate > existingDate) {
-          uniqueItemsMap[key] = item;
+          uniqueItemsObject[key] = item;
         }
       } else {
-        uniqueItemsMap[key] = item;
+        uniqueItemsObject[key] = item;
       }
     });
-    const uniqueItems = Object.values(uniqueItemsMap);
-    console.log(uniqueItems);
+    //pull out values ot make an array of objects
+    const uniqueItems = Object.values(uniqueItemsObject);
 
+    //the address was still in json for some reason so we needed to pull each part of it out
     let items = uniqueItems.map((item, index) => {
       let address = JSON.parse(item.address.human_address);
       let streetAddress = address.address;
@@ -84,29 +91,35 @@ function SearchList({ allData, names }) {
 
   return (
     <>
-      <div>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            placeholder="Search"
-            list="names"
-            onChange={handleChange}
-            value={searchTerm}
-          />
-          <datalist id="names">
-            {uniqueNames.map((item, index) => {
-              return <option value={item} key={index}></option>;
-            })}
-          </datalist>
-        </form>
+      <Container fluid>
+        <Row>
+          <Col md={4}>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="text"
+                placeholder="Search"
+                list="names"
+                onChange={handleChange}
+                value={searchTerm}
+              />
+              <datalist id="names">
+                {uniqueNames.map((item, index) => {
+                  return <option value={item} key={index}></option>;
+                })}
+              </datalist>
+            </form>
+            <ul className="placeList"> {listItems}</ul>
+          </Col>
 
-        <ul> {listItems}</ul>
-      </div>
-      <Map
-        allData={allData}
-        setClickedPlace={setClickedPlace}
-        clickedPlace={clickedPlace}
-      ></Map>
+          <Col md={8}>
+            <Map
+              data={allData}
+              setClickedPlace={setClickedPlace}
+              clickedPlace={clickedPlace}
+            ></Map>
+          </Col>
+        </Row>
+      </Container>
     </>
   );
 }
