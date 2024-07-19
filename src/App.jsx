@@ -27,13 +27,12 @@ function App() {
         );
       })
       .then((data) => {
-        console.log(data);
         let names = data.map((item) => {
           return item.restaurant_name;
         });
+
         setRestaurantNames(names);
         setAllData(data);
-        console.log(names);
       })
       .catch((error) => {
         console.log("Error after fetching data: " + error);
