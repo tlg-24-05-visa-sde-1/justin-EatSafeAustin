@@ -1,5 +1,11 @@
+import PlaceCard from "./Card";
+
 function Map() {
-  return <></>;
+  return (
+    <>
+      <PlaceCard></PlaceCard>
+    </>
+  );
 }
 
 export default Map;
