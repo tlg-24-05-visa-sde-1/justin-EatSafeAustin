@@ -5,13 +5,15 @@ import Card from "react-bootstrap/Card";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import PlaceCard from "./Card.jsx";
 
 function SearchList({ allData, names }) {
   //state variables
   const [clickedPlace, setClickedPlace] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [listArray, setListArray] = useState([]);
-  const [listItems, setListItems] = useState([]); //filter
+  const [listItems, setListItems] = useState([]);
+  const [uniqueItems, setUniqueItems] = useState([]);
 
   //So these don't recalculate on each render
   const uniqueNames = useMemo(() => {
@@ -21,9 +23,6 @@ function SearchList({ allData, names }) {
   function handleChange(e) {
     setSearchTerm(e.target.value);
   }
-
-  //make list sort exact names first
-  //filter out duplicates somewhere to be able to display various inspection dates on one card
 
   useEffect(() => {
     //setTimeout to debounce so it doesn't run too frequently
@@ -43,8 +42,7 @@ function SearchList({ allData, names }) {
   }, [searchTerm, allData]);
 
   useEffect(() => {
-    //I need to return only unique places here and then make the cards contain the latest inspection score.
-
+    //Need to return only unique places here and then make the cards contain the latest inspection score.
     //set an empty object
     let uniqueItemsObject = {};
 
@@ -64,9 +62,10 @@ function SearchList({ allData, names }) {
         uniqueItemsObject[key] = item;
       }
     });
-    //pull out values ot make an array of objects
-    const uniqueItems = Object.values(uniqueItemsObject);
-
+    //pull out values to and assign to uniqueItems make an array of objects
+    setUniqueItems(Object.values(uniqueItemsObject).sort());
+  }, [listArray]);
+  useEffect(() => {
     //the address was still in json for some reason so we needed to pull each part of it out
     let items = uniqueItems.map((item, index) => {
       let address = JSON.parse(item.address.human_address);
@@ -79,15 +78,13 @@ function SearchList({ allData, names }) {
           <Card>
             <h5>{item.restaurant_name}</h5>
             <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-            <p>Last Inspection Score: {item.score}</p>
-            <p>Last Inspection Date: {item.inspection_date}</p>
             <Button>See More</Button>
           </Card>
         </li>
       );
     });
     setListItems(items);
-  }, [listArray]);
+  }, [uniqueItems]);
 
   return (
     <>
@@ -113,11 +110,15 @@ function SearchList({ allData, names }) {
 
           <Col md={8}>
             <Map
+              uniqueItems={uniqueItems}
               data={allData}
               setClickedPlace={setClickedPlace}
               clickedPlace={clickedPlace}
             ></Map>
           </Col>
+        </Row>
+        <Row>
+          <PlaceCard></PlaceCard>
         </Row>
       </Container>
     </>
