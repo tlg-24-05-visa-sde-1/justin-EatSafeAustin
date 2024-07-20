@@ -49,7 +49,7 @@ function SearchList({ allData, names }) {
     //iterate over each item give it a key that is  a combo of its name and address so that each location is unique
     listArray.forEach((item) => {
       const key = `${item.name}-${item.address.human_address}`;
-      //using the key, check if item exists, then compare inspections dates if it does to get the most recent inspection and set that item to the uniqueItemsObject.  If not, just set the item to the uniqueItemsObject.
+      //using the key, check if item exists, then compare inspections dates if it does to get the most recent inspection and sets that item to the uniqueItemsObject using the key.  If not, just stores the item in the uniqueItemsObject with the key.
       if (uniqueItemsObject[key]) {
         const existingItem = uniqueItemsObject[key];
         const existingDate = new Date(existingItem.inspection_date);

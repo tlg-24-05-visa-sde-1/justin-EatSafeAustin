@@ -32,7 +32,11 @@ function App() {
         });
 
         setRestaurantNames(names);
-        setAllData(data);
+        setAllData(
+          data.filter((item) => {
+            return item.inspection_date > "2023-01-01T00.00.000";
+          })
+        );
       })
       .catch((error) => {
         console.log("Error after fetching data: " + error);

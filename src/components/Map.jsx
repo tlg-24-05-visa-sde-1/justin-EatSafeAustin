@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
@@ -8,11 +8,29 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   //maybe do this in searchList and pass it down in props
   //it's taking way to long to make the markers even with the clusters - look into lazy loading or something for clusters.
   const mapRef = useRef(null);
-  const [mapCenter] = useState([30.2672, -97.7431]);
+  const [mapCenter, setMapCenter] = useState([30.2672, -97.7431]);
+  const [mapData, setMapData] = useState([]);
+
+  useEffect(() => {
+    const markerObject = {};
+    data.forEach((item) => {
+      const key = `${item.restaurant_name}-${item.address.human_address}`;
+      if (markerObject[key]) {
+        const existingItem = markerObject[key];
+        const existingDate = new Date(existingItem.inspection_date);
+        const currDate = new Date(item.inspection_date);
+        if (currDate > existingDate) {
+          markerObject[key] = item;
+        }
+      } else markerObject[key] = item;
+    });
+
+    setMapData(Object.values(markerObject));
+  }, [data]);
 
   // Memoize markers to avoid unnecessary re-renders
   const markers = useMemo(() => {
-    return data.map((item, index) => {
+    return mapData.map((item, index) => {
       const position = [item.address.latitude, item.address.longitude];
       return (
         <Marker
