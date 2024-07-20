@@ -4,13 +4,12 @@ import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
-  //need to take data and filter it down to only places with unique names and addresses.
-  //maybe do this in searchList and pass it down in props
   //it's taking way to long to make the markers even with the clusters - look into lazy loading or something for clusters.
   const mapRef = useRef(null);
   const [mapCenter, setMapCenter] = useState([30.2672, -97.7431]);
   const [mapData, setMapData] = useState([]);
 
+  //filter data down to unique places to just get their latest inspection score
   useEffect(() => {
     const markerObject = {};
     data.forEach((item) => {

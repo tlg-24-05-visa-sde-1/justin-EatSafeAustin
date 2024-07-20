@@ -33,7 +33,9 @@ function SearchList({ allData, names }) {
       } else {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
         const filteredData = allData.filter((item) =>
-          item.restaurant_name.toLowerCase().includes(lowerCaseSearchTerm)
+          //TODO
+          //which is better to use here, to use .startsWith() or .includes()
+          item.restaurant_name.toLowerCase().startsWith(lowerCaseSearchTerm)
         );
         setListArray(filteredData);
       }
@@ -68,6 +70,8 @@ function SearchList({ allData, names }) {
   useEffect(() => {
     //the address was still in json for some reason so we needed to pull each part of it out
     let items = uniqueItems.map((item, index) => {
+      //TODO
+      //maybe parse outside fo here because apparently parsing is "expensive"
       let address = JSON.parse(item.address.human_address);
       let streetAddress = address.address;
       let city = address.city;
