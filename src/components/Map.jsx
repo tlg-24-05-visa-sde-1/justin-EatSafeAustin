@@ -9,6 +9,8 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   const [mapCenter, setMapCenter] = useState([30.2672, -97.7431]);
   const [mapData, setMapData] = useState([]);
 
+  //TODO- have markers make an api call to get directions?
+
   //filter data down to unique places to just get their latest inspection score
   useEffect(() => {
     const markerObject = {};
@@ -27,7 +29,7 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
     setMapData(Object.values(markerObject));
   }, [data]);
 
-  // Memoize markers to avoid unnecessary re-renders
+  // Memoize markers to avoid unnecessary re-renders - caches data and returns the cached result when the same values occur again and only computes when its dependency changes, here mapData
   const markers = useMemo(() => {
     return mapData.map((item, index) => {
       const position = [item.address.latitude, item.address.longitude];
@@ -42,20 +44,22 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
           }}
         >
           <Popup>
-            {item.restaurant_name} <br /> {item.address.human_address}
+            {item.restaurant_name} <br />
+            Inspection Score: {item.score}
           </Popup>
         </Marker>
       );
     });
-  }, [data]);
+  }, [mapData]);
 
   return (
     <MapContainer
       center={mapCenter}
-      zoom={12}
+      zoom={13}
       ref={mapRef}
       style={{ height: "75vh", width: "100%" }}
       scrollWheelZoom={true}
+      preferCanvas={true}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

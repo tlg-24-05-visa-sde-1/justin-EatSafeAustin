@@ -7,6 +7,10 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import PlaceCard from "./Card.jsx";
 
+//TODO
+//decide whether or not to ditch the card and just have more info appear when the see more
+//button is clicked.
+
 function SearchList({ allData, names }) {
   //state variables
   const [clickedPlace, setClickedPlace] = useState(null);
