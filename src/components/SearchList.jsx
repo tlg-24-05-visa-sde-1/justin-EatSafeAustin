@@ -71,28 +71,28 @@ function SearchList({ allData, names }) {
     //pull out values to and assign to uniqueItems make an array of objects
     setUniqueItems(Object.values(uniqueItemsObject).sort());
   }, [listArray]);
-  useEffect(() => {
-    //the address was still in json for some reason so we needed to pull each part of it out
-    let items = uniqueItems.map((item, index) => {
-      //TODO
-      //maybe parse outside fo here because apparently parsing is "expensive"
-      let address = JSON.parse(item.address.human_address);
-      let streetAddress = address.address;
-      let city = address.city;
-      let state = address.state;
-      let zip = address.zip;
-      return (
-        <li key={index}>
-          <Card>
-            <h5>{item.restaurant_name}</h5>
-            <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-            <Button>See More</Button>
-          </Card>
-        </li>
-      );
-    });
-    setListItems(items);
-  }, [uniqueItems]);
+  // useEffect(() => {
+  //   //the address was still in json for some reason so we needed to pull each part of it out
+  //   let items = uniqueItems.map((item, index) => {
+  //     //TODO
+  //     //maybe parse outside fo here because apparently parsing is "expensive"
+  //     let address = JSON.parse(item.address.human_address);
+  //     let streetAddress = address.address;
+  //     let city = address.city;
+  //     let state = address.state;
+  //     let zip = address.zip;
+  //     return (
+  //       <li key={index}>
+  //         <Card>
+  //           <h5>{item.restaurant_name}</h5>
+  //           <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
+  //           <Button>See More</Button>
+  //         </Card>
+  //       </li>
+  //     );
+  //   });
+  //   setListItems(items);
+  // }, [uniqueItems]);
 
   return (
     <>
@@ -113,7 +113,16 @@ function SearchList({ allData, names }) {
                 })}
               </datalist>
             </form>
-            <ul className="placeList"> {listItems}</ul>
+            <ul className="placeList">
+              {" "}
+              <PlaceCard
+                uniqueItems={uniqueItems}
+                setListItems={setListItems}
+                listItems={listItems}
+                clickedPlace={clickedPlace}
+                setClickedPlace={setClickedPlace}
+              ></PlaceCard>
+            </ul>
           </Col>
 
           <Col md={8}>
@@ -125,9 +134,7 @@ function SearchList({ allData, names }) {
             ></Map>
           </Col>
         </Row>
-        <Row>
-          <PlaceCard></PlaceCard>
-        </Row>
+        <Row></Row>
       </Container>
     </>
   );

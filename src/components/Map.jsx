@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import MapCenterChanger from "./MapCenterChanger";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   //it's taking way to long to make the markers even with the clusters - look into lazy loading or something for clusters.
@@ -21,9 +22,11 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
         const existingDate = new Date(existingItem.inspection_date);
         const currDate = new Date(item.inspection_date);
         if (currDate > existingDate) {
-          markerObject[key] = item;
+          markerObject[key] = item; // Update with the latest inspection
         }
-      } else markerObject[key] = item;
+      } else {
+        markerObject[key] = item; // Initial assignment
+      }
     });
 
     setMapData(Object.values(markerObject));
@@ -45,7 +48,7 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
         >
           <Popup>
             {item.restaurant_name} <br />
-            Inspection Score: {item.score}
+            Last Inspection Score: {item.score}
           </Popup>
         </Marker>
       );
@@ -66,6 +69,7 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <MarkerClusterGroup chunkedLoading>{markers}</MarkerClusterGroup>
+      <MapCenterChanger center={mapCenter} />
     </MapContainer>
   );
 }
