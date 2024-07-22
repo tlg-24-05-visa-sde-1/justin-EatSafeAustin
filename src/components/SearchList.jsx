@@ -2,13 +2,22 @@ import { useState, useEffect, useMemo } from "react";
 import Map from "./Map.jsx";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import PlaceCard from "./Card.jsx";
+
+//TODO
+//decide whether or not to ditch the card and just have more info appear when the see more
+//button is clicked.
 
 function SearchList({ allData, names }) {
   //state variables
   const [clickedPlace, setClickedPlace] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [listArray, setListArray] = useState([]);
-  const [listItems, setListItems] = useState([]); //filter
+  const [listItems, setListItems] = useState([]);
+  const [uniqueItems, setUniqueItems] = useState([]);
 
   //So these don't recalculate on each render
   const uniqueNames = useMemo(() => {
@@ -19,9 +28,6 @@ function SearchList({ allData, names }) {
     setSearchTerm(e.target.value);
   }
 
-  //make list sort exact names first
-  //filter out duplicates somewhere to be able to display various inspection dates on one card
-
   useEffect(() => {
     //setTimeout to debounce so it doesn't run too frequently
     const timer = setTimeout(() => {
@@ -31,7 +37,9 @@ function SearchList({ allData, names }) {
       } else {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
         const filteredData = allData.filter((item) =>
-          item.restaurant_name.toLowerCase().includes(lowerCaseSearchTerm)
+          //TODO
+          //which is better to use here, to use .startsWith() or .includes()
+          item.restaurant_name.toLowerCase().startsWith(lowerCaseSearchTerm)
         );
         setListArray(filteredData);
       }
@@ -40,28 +48,34 @@ function SearchList({ allData, names }) {
   }, [searchTerm, allData]);
 
   useEffect(() => {
-    //I need to return only unique places here and then make the cards contain the latest inspection score.
-    let uniqueItemsMap = {};
+    //Need to return only unique places here and then make the cards contain the latest inspection score.
+    //set an empty object
+    let uniqueItemsObject = {};
 
+    //iterate over each item give it a key that is  a combo of its name and address so that each location is unique
     listArray.forEach((item) => {
       const key = `${item.name}-${item.address.human_address}`;
-
-      if (uniqueItemsMap[key]) {
-        const existingItem = uniqueItemsMap[key];
+      //using the key, check if item exists, then compare inspections dates if it does to get the most recent inspection and sets that item to the uniqueItemsObject using the key.  If not, just stores the item in the uniqueItemsObject with the key.
+      if (uniqueItemsObject[key]) {
+        const existingItem = uniqueItemsObject[key];
         const existingDate = new Date(existingItem.inspection_date);
         const currentDate = new Date(item.inspection_date);
 
         if (currentDate > existingDate) {
-          uniqueItemsMap[key] = item;
+          uniqueItemsObject[key] = item;
         }
       } else {
-        uniqueItemsMap[key] = item;
+        uniqueItemsObject[key] = item;
       }
     });
-    const uniqueItems = Object.values(uniqueItemsMap);
-    console.log(uniqueItems);
-
+    //pull out values to and assign to uniqueItems make an array of objects
+    setUniqueItems(Object.values(uniqueItemsObject).sort());
+  }, [listArray]);
+  useEffect(() => {
+    //the address was still in json for some reason so we needed to pull each part of it out
     let items = uniqueItems.map((item, index) => {
+      //TODO
+      //maybe parse outside fo here because apparently parsing is "expensive"
       let address = JSON.parse(item.address.human_address);
       let streetAddress = address.address;
       let city = address.city;
@@ -72,41 +86,49 @@ function SearchList({ allData, names }) {
           <Card>
             <h5>{item.restaurant_name}</h5>
             <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-            <p>Last Inspection Score: {item.score}</p>
-            <p>Last Inspection Date: {item.inspection_date}</p>
             <Button>See More</Button>
           </Card>
         </li>
       );
     });
     setListItems(items);
-  }, [listArray]);
+  }, [uniqueItems]);
 
   return (
     <>
-      <div>
-        <form onSubmit={(e) => e.preventDefault()}>
-          <input
-            type="text"
-            placeholder="Search"
-            list="names"
-            onChange={handleChange}
-            value={searchTerm}
-          />
-          <datalist id="names">
-            {uniqueNames.map((item, index) => {
-              return <option value={item} key={index}></option>;
-            })}
-          </datalist>
-        </form>
+      <Container fluid>
+        <Row>
+          <Col md={4}>
+            <form onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="text"
+                placeholder="Search"
+                list="names"
+                onChange={handleChange}
+                value={searchTerm}
+              />
+              <datalist id="names">
+                {uniqueNames.map((item, index) => {
+                  return <option value={item} key={index}></option>;
+                })}
+              </datalist>
+            </form>
+            <ul className="placeList"> {listItems}</ul>
+          </Col>
 
-        <ul> {listItems}</ul>
-      </div>
-      <Map
-        allData={allData}
-        setClickedPlace={setClickedPlace}
-        clickedPlace={clickedPlace}
-      ></Map>
+          <Col md={8}>
+            <Map
+              uniqueItems={uniqueItems}
+              data={allData}
+              setClickedPlace={setClickedPlace}
+              clickedPlace={clickedPlace}
+            ></Map>
+          </Col>
+        </Row>
+        <Row>
+          <PlaceCard></PlaceCard>
+        </Row>
+      </Container>
     </>
   );
 }

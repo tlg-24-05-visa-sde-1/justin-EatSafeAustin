@@ -23,8 +23,6 @@ a:hover {
 }
 
 body {
-  margin: 0;
-  display: flex;
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
@@ -65,4 +63,19 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+ul {
+  list-style: none;
+}
+li {
+  margin: 5px;
+}
+
+#map {
+  height: 70vh;
+}
+
+.placeList {
+  height: 65vh;
+  overflow-y: auto;
 }
