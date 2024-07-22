@@ -12,6 +12,14 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
 
   //TODO- have markers make an api call to get directions?
 
+  useEffect(() => {
+    if (clickedPlace) {
+      setMapCenter([clickedPlace[0], clickedPlace[1]]);
+      console.log(mapCenter);
+      console.log(clickedPlace);
+    }
+  }, [clickedPlace]);
+
   //filter data down to unique places to just get their latest inspection score
   useEffect(() => {
     const markerObject = {};
@@ -37,15 +45,7 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
     return mapData.map((item, index) => {
       const position = [item.address.latitude, item.address.longitude];
       return (
-        <Marker
-          position={position}
-          key={index}
-          eventHandlers={{
-            click: () => {
-              setClickedPlace(item);
-            },
-          }}
-        >
+        <Marker position={position} key={index}>
           <Popup>
             {item.restaurant_name} <br />
             Last Inspection Score: {item.score}
@@ -64,12 +64,13 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
       scrollWheelZoom={true}
       preferCanvas={true}
     >
+      <MapCenterChanger center={mapCenter} />
+
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <MarkerClusterGroup chunkedLoading>{markers}</MarkerClusterGroup>
-      <MapCenterChanger center={mapCenter} />
     </MapContainer>
   );
 }

@@ -61,18 +61,20 @@ function PlaceCard({
 
       if (isExpanded) {
         return (
-          <li key={index}>
-            <Card>
-              <h5>{item.restaurant_name}</h5>
-              <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-              <ul>
-                {inspectionList.map((inspection, idx) => (
-                  <li key={idx}>{inspection}</li>
-                ))}
-              </ul>
-              <Button onClick={() => setIsExpanded(false)}>See Less</Button>
-            </Card>
-          </li>
+          <div>
+            <li key={index}>
+              <Card>
+                <h5>{item.restaurant_name}</h5>
+                <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
+                <ul>
+                  {inspectionList.map((inspection, idx) => (
+                    <li key={idx}>{inspection}</li>
+                  ))}
+                </ul>
+                <Button onClick={() => setIsExpanded(false)}>See Less</Button>
+              </Card>
+            </li>
+          </div>
         );
       } else {
         return (
