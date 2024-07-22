@@ -2,6 +2,7 @@ import { useState, useMemo, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import MapCenterChanger from "./MapCenterChanger";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   //it's taking way to long to make the markers even with the clusters - look into lazy loading or something for clusters.
@@ -10,6 +11,14 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   const [mapData, setMapData] = useState([]);
 
   //TODO- have markers make an api call to get directions?
+
+  useEffect(() => {
+    if (clickedPlace) {
+      setMapCenter([clickedPlace[0], clickedPlace[1]]);
+      console.log(mapCenter);
+      console.log(clickedPlace);
+    }
+  }, [clickedPlace]);
 
   //filter data down to unique places to just get their latest inspection score
   useEffect(() => {
@@ -21,9 +30,11 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
         const existingDate = new Date(existingItem.inspection_date);
         const currDate = new Date(item.inspection_date);
         if (currDate > existingDate) {
-          markerObject[key] = item;
+          markerObject[key] = item; // Update with the latest inspection
         }
-      } else markerObject[key] = item;
+      } else {
+        markerObject[key] = item; // Initial assignment
+      }
     });
 
     setMapData(Object.values(markerObject));
@@ -34,18 +45,10 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
     return mapData.map((item, index) => {
       const position = [item.address.latitude, item.address.longitude];
       return (
-        <Marker
-          position={position}
-          key={index}
-          eventHandlers={{
-            click: () => {
-              setClickedPlace(item);
-            },
-          }}
-        >
+        <Marker position={position} key={index}>
           <Popup>
             {item.restaurant_name} <br />
-            Inspection Score: {item.score}
+            Last Inspection Score: {item.score}
           </Popup>
         </Marker>
       );
@@ -61,6 +64,8 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
       scrollWheelZoom={true}
       preferCanvas={true}
     >
+      <MapCenterChanger center={mapCenter} />
+
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
