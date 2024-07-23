@@ -6,7 +6,7 @@ function MapCenterChanger({ center }) {
 
   const map = useMap();
   useEffect(() => {
-    map.setView(center);
+    map.setView(center, 18);
   }, [center, map]);
   return null;
 }
