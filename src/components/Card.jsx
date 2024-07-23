@@ -9,8 +9,7 @@ function PlaceCard({
   clickedPlace,
   setClickedPlace,
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [inspectionList, setInspectionList] = useState([]);
+  const [expandedItems, setExpandedItems] = useState({});
 
   //when the See More button is clicked, it makes a fetch to city of austin api to get information for that specific facility.
   function onClickHandler(facility_id) {
@@ -32,24 +31,42 @@ function PlaceCard({
       })
       .then((data) => {
         console.log(data);
-        const inspections = data.map((item, index) => {
-          let date = new Date(item.inspection_date);
-          return (
-            <p key={index}>
-              Inspection Date: {date.toLocaleDateString()} Score: {item.score}
-            </p>
-          );
-        });
-        setInspectionList(inspections); // Update inspectionList state with mapped JSX elements
-        setIsExpanded(!isExpanded); // Toggle isExpanded state
+        const inspections = data
+          .sort(
+            (a, b) => new Date(b.inspection_date) - new Date(a.inspection_date)
+          )
+          .map((item, index) => {
+            let date = new Date(item.inspection_date);
+            return (
+              <p key={index}>
+                Inspection Date: {date.toLocaleDateString()} Score: {item.score}
+              </p>
+            );
+          });
+
+        //set ExpandedItems
+        setExpandedItems((prev) => ({
+          ...prev,
+          [facility_id]: {
+            expanded: true,
+            inspections,
+          },
+        })); //setClickedPlace to be passed down from SearchList to Map
         setClickedPlace([data[0].address.latitude, data[0].address.longitude]);
-        console.log(data[0].address.latitude);
-        console.log(data[0].address.longitude);
       })
       .catch((error) => {
         console.error("Error after fetching data: ", error);
       });
   }
+  const handleSeeLess = (facility_id) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [facility_id]: {
+        ...prev[facility_id],
+        expanded: false,
+      },
+    }));
+  };
 
   useEffect(() => {
     let items = uniqueItems.map((item, index) => {
@@ -59,39 +76,38 @@ function PlaceCard({
       let state = address.state;
       let zip = address.zip;
 
-      if (isExpanded) {
-        return (
-          <div>
-            <li key={index}>
-              <Card>
-                <h5>{item.restaurant_name}</h5>
-                <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-                <ul>
-                  {inspectionList.map((inspection, idx) => (
-                    <li key={idx}>{inspection}</li>
-                  ))}
-                </ul>
-                <Button onClick={() => setIsExpanded(false)}>See Less</Button>
-              </Card>
-            </li>
-          </div>
-        );
-      } else {
-        return (
+      const isExpanded = expandedItems[item.facility_id]?.expanded || false;
+      const inspections = expandedItems[item.facility_id]?.inspections || [];
+
+      return (
+        <div>
           <li key={index}>
             <Card>
               <h5>{item.restaurant_name}</h5>
               <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-              <Button onClick={() => onClickHandler(item.facility_id)}>
-                See More
-              </Button>
+              {isExpanded ? (
+                <>
+                  <ul>
+                    {inspections.map((inspection, index2) => (
+                      <li key={index2}>{inspection}</li>
+                    ))}
+                  </ul>
+                  <Button onClick={() => handleSeeLess(item.facility_id)}>
+                    See Less
+                  </Button>
+                </>
+              ) : (
+                <Button onClick={() => onClickHandler(item.facility_id)}>
+                  See Inspections
+                </Button>
+              )}
             </Card>
           </li>
-        );
-      }
+        </div>
+      );
     });
     setListItems(items); // Update listItems state with updated items
-  }, [uniqueItems, isExpanded, setListItems, inspectionList]);
+  }, [uniqueItems, expandedItems, setListItems]);
 
   return <ul className="placeList">{listItems}</ul>;
 }
