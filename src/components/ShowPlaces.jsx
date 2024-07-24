@@ -63,7 +63,6 @@ function ShowPlaces({ mapData, markers, clickedPlace }) {
       type: "Point",
       coordinates: [
         parseFloat(place.address.longitude),
-
         parseFloat(place.address.latitude),
       ],
     },
