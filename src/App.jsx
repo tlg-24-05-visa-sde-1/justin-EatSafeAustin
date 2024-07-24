@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import SearchList from "./components/SearchList.jsx";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Header from "./components/Header.jsx";
 
 function App() {
   const [allData, setAllData] = useState([]);
@@ -44,6 +45,7 @@ function App() {
   }, []);
   return (
     <>
+      <Header />
       <SearchList allData={allData} names={restaurantNames}></SearchList>
     </>
   );

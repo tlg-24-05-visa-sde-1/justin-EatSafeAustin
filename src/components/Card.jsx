@@ -78,7 +78,7 @@ function PlaceCard({ uniqueItems, setListItems, listItems, setClickedPlace }) {
 
       return (
         <div>
-          <li key={index}>
+          <li key={`${item.facility_id}-${index}`}>
             <Card>
               <h5>{item.restaurant_name}</h5>
               <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>

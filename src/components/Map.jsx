@@ -1,11 +1,10 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import MarkerClusterGroup from "react-leaflet-cluster";
 import MapCenterChanger from "./MapCenterChanger";
+import ShowPlaces from "./ShowPlaces";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
-  //it's taking way to long to make the markers even with the clusters - look into lazy loading or something for clusters.
   const mapRef = useRef(null);
   const [mapCenter, setMapCenter] = useState([30.2672, -97.7431]);
   const [mapData, setMapData] = useState([]);
@@ -53,6 +52,9 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
     });
   }, [mapData]);
 
+  if (mapData.length === 0) {
+    return "Loading Map...";
+  }
   return (
     <MapContainer
       center={mapCenter}
@@ -68,7 +70,8 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <MarkerClusterGroup chunkedLoading>{markers}</MarkerClusterGroup>
+      <ShowPlaces mapData={mapData} />
+      {/* <MarkerClusterGroup chunkedLoading>{markers}</MarkerClusterGroup> */}
     </MapContainer>
   );
 }
