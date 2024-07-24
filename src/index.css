@@ -78,4 +78,20 @@ li {
 .placeList {
   height: 65vh;
   overflow-y: auto;
+  padding: 0;
+}
+
+.headerContainer {
+  width: 100%;
+  margin: auto;
+}
+
+.headerDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 6rem;
 }

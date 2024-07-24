@@ -6,7 +6,7 @@ import "../showPlaces.css";
 
 const icons = {};
 const fetchIcon = (count) => {
-  const size = 10 + (count / 100) * 20;
+  const size = 10 + (count / 100) * 30;
   if (!icons[count]) {
     icons[count] = L.divIcon({
       html: `<div class="cluster-marker" style="width: ${size}px; height: ${size}px;">
@@ -19,7 +19,7 @@ const fetchIcon = (count) => {
   return icons[count];
 };
 
-function ShowPlaces({ mapData, markers }) {
+function ShowPlaces({ mapData, markers, clickedPlace }) {
   const maxZoom = 22;
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(13);
@@ -68,9 +68,7 @@ function ShowPlaces({ mapData, markers }) {
       ],
     },
   }));
-  console.log(points);
-  console.log("Bounds:", bounds);
-  console.log("Zoom:", zoom);
+
   const { clusters, supercluster } = useSupercluster({
     points: points,
     bounds: bounds,

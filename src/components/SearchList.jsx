@@ -39,7 +39,7 @@ function SearchList({ allData, names }) {
         const filteredData = allData.filter((item) =>
           //TODO
           //which is better to use here, to use .startsWith() or .includes()
-          item.restaurant_name.toLowerCase().startsWith(lowerCaseSearchTerm)
+          item.restaurant_name.toLowerCase().includes(lowerCaseSearchTerm)
         );
         setListArray(filteredData);
       }
@@ -71,34 +71,12 @@ function SearchList({ allData, names }) {
     //pull out values to and assign to uniqueItems make an array of objects
     setUniqueItems(Object.values(uniqueItemsObject).sort());
   }, [listArray]);
-  // useEffect(() => {
-  //   //the address was still in json for some reason so we needed to pull each part of it out
-  //   let items = uniqueItems.map((item, index) => {
-  //     //TODO
-  //     //maybe parse outside fo here because apparently parsing is "expensive"
-  //     let address = JSON.parse(item.address.human_address);
-  //     let streetAddress = address.address;
-  //     let city = address.city;
-  //     let state = address.state;
-  //     let zip = address.zip;
-  //     return (
-  //       <li key={index}>
-  //         <Card>
-  //           <h5>{item.restaurant_name}</h5>
-  //           <p>{`${streetAddress} ${city}, ${state} ${zip} `}</p>
-  //           <Button>See More</Button>
-  //         </Card>
-  //       </li>
-  //     );
-  //   });
-  //   setListItems(items);
-  // }, [uniqueItems]);
 
   return (
     <>
       <Container fluid>
         <Row>
-          <Col md={4}>
+          <Col md={4} className="listCol">
             <form onSubmit={(e) => e.preventDefault()}>
               <input
                 type="text"
@@ -108,9 +86,11 @@ function SearchList({ allData, names }) {
                 value={searchTerm}
               />
               <datalist id="names">
-                {uniqueNames.map((item, index) => {
-                  return <option value={item} key={index}></option>;
-                })}
+                {uniqueNames
+                  .sort((a, b) => a.localeCompare(b))
+                  .map((item, index) => {
+                    return <option value={item} key={index}></option>;
+                  })}
               </datalist>
             </form>
 

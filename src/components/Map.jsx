@@ -1,11 +1,10 @@
 import { useState, useMemo, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-// import MapCenterChanger from "./MapCenterChanger";
+import MapCenterChanger from "./MapCenterChanger";
 import ShowPlaces from "./ShowPlaces";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
-  //it's taking way to long to make the markers even with the clusters - look into lazy loading or something for clusters.
   const mapRef = useRef(null);
   const [mapCenter, setMapCenter] = useState([30.2672, -97.7431]);
   const [mapData, setMapData] = useState([]);
@@ -65,7 +64,7 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
       scrollWheelZoom={true}
       preferCanvas={true}
     >
-      {/* <MapCenterChanger center={mapCenter} zoom={18} /> */}
+      <MapCenterChanger center={mapCenter} zoom={18} />
 
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
