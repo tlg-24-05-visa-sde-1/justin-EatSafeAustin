@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 
-function PlaceCard({
-  uniqueItems,
-  setListItems,
-  listItems,
-  clickedPlace,
-  setClickedPlace,
-}) {
+function PlaceCard({ uniqueItems, setListItems, listItems, setClickedPlace }) {
   const [expandedItems, setExpandedItems] = useState({});
 
   //when the See More button is clicked, it makes a fetch to city of austin api to get information for that specific facility.
@@ -45,6 +39,7 @@ function PlaceCard({
           });
 
         //set ExpandedItems
+        //using the spread operator here with ...prev, lets us create a new object with the previous state with our changes.  When we pass arguments to a state setter, the first arguments will always be the previous state
         setExpandedItems((prev) => ({
           ...prev,
           [facility_id]: {
@@ -58,6 +53,8 @@ function PlaceCard({
         console.error("Error after fetching data: ", error);
       });
   }
+
+  //also use previous state to make a new object and update the property we want to update, i.e. expanded.
   const handleSeeLess = (facility_id) => {
     setExpandedItems((prev) => ({
       ...prev,

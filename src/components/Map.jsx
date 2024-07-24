@@ -15,8 +15,6 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   useEffect(() => {
     if (clickedPlace) {
       setMapCenter([clickedPlace[0], clickedPlace[1]]);
-      console.log(mapCenter);
-      console.log(clickedPlace);
     }
   }, [clickedPlace]);
 
@@ -64,7 +62,7 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
       scrollWheelZoom={true}
       preferCanvas={true}
     >
-      <MapCenterChanger center={mapCenter} />
+      <MapCenterChanger center={mapCenter} zoom={18} />
 
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

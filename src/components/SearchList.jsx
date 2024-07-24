@@ -113,13 +113,12 @@ function SearchList({ allData, names }) {
                 })}
               </datalist>
             </form>
+
             <ul className="placeList">
-              {" "}
               <PlaceCard
                 uniqueItems={uniqueItems}
                 setListItems={setListItems}
                 listItems={listItems}
-                clickedPlace={clickedPlace}
                 setClickedPlace={setClickedPlace}
               ></PlaceCard>
             </ul>
