@@ -76,6 +76,13 @@ li {
   height: 70vh;
 }
 
+.loadingDiv {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .placeList {
   height: 65vh;
   overflow-y: auto;
