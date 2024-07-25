@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import useSupercluster from "use-supercluster";
 import { Marker, useMap, Popup } from "react-leaflet";
 import L from "leaflet";
-import "../showPlaces.css";
+import "../ShowPlaces.css";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
 import "leaflet.awesome-markers/dist/leaflet.awesome-markers";
 const icons = {};
