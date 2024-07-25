@@ -45,7 +45,6 @@ function App() {
   }, []);
   return (
     <>
-      <Header />
       <SearchList allData={allData} names={restaurantNames}></SearchList>
     </>
   );
