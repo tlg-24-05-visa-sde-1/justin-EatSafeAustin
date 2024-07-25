@@ -1,0 +1,10 @@
+#map {
+  height: 70vh;
+}
+
+.loadingDiv {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
