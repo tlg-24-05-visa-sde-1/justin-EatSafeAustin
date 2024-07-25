@@ -5,15 +5,25 @@ import MapCenterChanger from "./MapCenterChanger";
 import ShowPlaces from "./ShowPlaces";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
+  const initialMapCenter = [30.2672, -97.7431];
+  const initialMapZoom = 13;
   const mapRef = useRef(null);
-  const [mapCenter, setMapCenter] = useState([30.2672, -97.7431]);
+  const [mapCenter, setMapCenter] = useState(initialMapCenter);
   const [mapData, setMapData] = useState([]);
+  const [mapZoom, setMapZoom] = useState(initialMapZoom);
 
   //TODO- have markers make an api call to get directions?
+
+  // Reset map center when component mounts
+  useEffect(() => {
+    setMapCenter(initialMapCenter);
+    setMapZoom(initialMapZoom);
+  }, []);
 
   useEffect(() => {
     if (clickedPlace) {
       setMapCenter([clickedPlace[0], clickedPlace[1]]);
+      setMapZoom(18);
     }
   }, [clickedPlace]);
 
@@ -53,25 +63,24 @@ function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   }, [mapData]);
 
   if (mapData.length === 0) {
-    return "Loading Map...";
+    return <div className="loadingDiv">Loading Map...</div>;
   }
   return (
     <MapContainer
       center={mapCenter}
-      zoom={13}
+      zoom={initialMapZoom}
       ref={mapRef}
       style={{ height: "75vh", width: "100%" }}
       scrollWheelZoom={true}
       preferCanvas={true}
     >
-      <MapCenterChanger center={mapCenter} zoom={18} />
+      <MapCenterChanger center={mapCenter} zoom={mapZoom} />
 
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <ShowPlaces mapData={mapData} />
-      {/* <MarkerClusterGroup chunkedLoading>{markers}</MarkerClusterGroup> */}
     </MapContainer>
   );
 }

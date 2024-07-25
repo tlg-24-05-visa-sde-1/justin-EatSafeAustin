@@ -3,7 +3,8 @@ import useSupercluster from "use-supercluster";
 import { Marker, useMap, Popup } from "react-leaflet";
 import L from "leaflet";
 import "../showPlaces.css";
-
+import "leaflet.awesome-markers/dist/leaflet.awesome-markers.css";
+import "leaflet.awesome-markers/dist/leaflet.awesome-markers";
 const icons = {};
 const fetchIcon = (count) => {
   const size = 10 + (count / 100) * 30;
@@ -19,7 +20,32 @@ const fetchIcon = (count) => {
   return icons[count];
 };
 
-function ShowPlaces({ mapData, markers, clickedPlace }) {
+const redMarker = L.AwesomeMarkers.icon({
+  prefix: "fa-solid fa-utensils",
+  markerColor: "red",
+});
+const greenMarker = L.AwesomeMarkers.icon({
+  prefix: "fa-solid fa-utensils",
+  markerColor: "green",
+});
+const orangeMarker = L.AwesomeMarkers.icon({
+  prefix: "fa-solid fa-utensils",
+  markerColor: "orange",
+});
+const blueMarker = L.AwesomeMarkers.icon({
+  prefix: "fa-solid fa-utensils",
+  markerColor: "blue",
+});
+
+function getMarkerByScore(score) {
+  console.log("Score ", score);
+  if (score >= 90) return greenMarker;
+  else if (score >= 80 && score < 90) return blueMarker;
+  else if (score >= 70 && score < 80) return orangeMarker;
+  return redMarker;
+}
+
+function ShowPlaces({ mapData }) {
   const maxZoom = 22;
   const [bounds, setBounds] = useState(null);
   const [zoom, setZoom] = useState(13);
@@ -75,14 +101,7 @@ function ShowPlaces({ mapData, markers, clickedPlace }) {
     options: { radius: 75, maxZoom: 16 },
   });
   console.log(clusters.length);
-
-  //figure out dynamic styling for markers?
-  //   const getColorByScore = (score) => {
-  //     if (score < 70) return "red";
-  //     if (score >= 70 && score < 80) return "yellow";
-  //     if (score >= 80 && score < 90) return "blue";
-  //     if (score > 90) return "green";
-  //   };
+  console.log(zoom);
 
   return (
     <>
@@ -118,10 +137,12 @@ function ShowPlaces({ mapData, markers, clickedPlace }) {
           <Marker
             key={`place-${cluster.properties.id}`}
             position={[latitude, longitude]}
+            icon={getMarkerByScore(cluster.properties.place.score)}
           >
             <Popup>
               {cluster.properties.place.restaurant_name} <br />
-              Last Inspection Score: {cluster.properties.place.score}
+              Last Inspection Score:{" "}
+              <span>{cluster.properties.place.score}</span>
             </Popup>
           </Marker>
         );
