@@ -98,7 +98,7 @@ function ShowPlaces({ mapData }) {
     points: points,
     bounds: bounds,
     zoom: zoom,
-    options: { radius: 75, maxZoom: 16 },
+    options: { radius: 70, maxZoom: 16 },
   });
   console.log(clusters.length);
   console.log(zoom);

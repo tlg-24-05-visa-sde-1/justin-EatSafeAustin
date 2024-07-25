@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapCenterChanger from "./MapCenterChanger";
 import ShowPlaces from "./ShowPlaces";
+import "../Map.css";
 
 function Map({ data, setClickedPlace, clickedPlace, uniqueItems }) {
   const initialMapCenter = [30.2672, -97.7431];
