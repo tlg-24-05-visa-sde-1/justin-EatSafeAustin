@@ -5,6 +5,8 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import PlaceCard from "./Card.jsx";
 import "../SearchList.css";
+import Header from "./Header.jsx";
+add;
 
 //TODO
 //decide whether or not to ditch the card and just have more info appear when the see more
@@ -75,7 +77,10 @@ function SearchList({ allData, names }) {
     <>
       <Container fluid>
         <Row>
-          <Col md={4} className="listCol">
+          <Header />
+        </Row>
+        <Row>
+          <Col xs={12} md={4} className="listCol">
             <form onSubmit={(e) => e.preventDefault()}>
               <input
                 type="text"
@@ -103,7 +108,7 @@ function SearchList({ allData, names }) {
             </ul>
           </Col>
 
-          <Col md={8}>
+          <Col xs={12} md={8}>
             <Map
               uniqueItems={uniqueItems}
               data={allData}
