@@ -6,7 +6,6 @@ import Col from "react-bootstrap/Col";
 import PlaceCard from "./Card.jsx";
 import "../SearchList.css";
 import Header from "./Header.jsx";
-add;
 
 //TODO
 //decide whether or not to ditch the card and just have more info appear when the see more
